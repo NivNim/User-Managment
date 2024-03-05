@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        nav {
+            background-color: #000;
+            color: #fff;
+            padding: 15px;
+            width: 100%; 
+            height: 50px; 
+            box-sizing: border-box; 
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        nav ul li:first-child {
+            float: left;
+        }
+
+        nav ul li:nth-child(2) {
+            float: right;
+        }
+
+        nav ul li:nth-child(3) {
+            float: right;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .user-info {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 5px solid #ddd;
+            padding: 10px;
+        }
+
+        .user-info div {
+            margin-bottom: 10px;
+        }
+
+        .user-info div span {
+            font-weight: bold;
+        }
+
+        .user-info button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+
+        .user-info button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/adddata">Add User</a></li>
+        </ul>
+    </nav>
+     <h1>Welcome to the Home Page</h1>
+    <div class="user-info">
+        {{#each userData}}
+        <div>
+            <span>Name:</span> {{this.name}}
+        </div>
+        <div>
+            <span>Email:</span> {{this.email}}
+        </div>
+        <div>
+            <span>Number:</span> {{this.mobilenumber}}
+        </div>
+        <div>
+            <button class="deleteBtn" data-id="{{this._id}}">Delete</button> 
+<button class="editBtn" data-id="{{this._id}}">
+  <a href="/editUser/{{this._id}}" style="text-decoration: none; color: white;">Edit</a>
+</button>
+ 
+        </div>
+        {{/each}}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteButtons = document.querySelectorAll('.deleteBtn');
+            deleteButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var userId = btn.getAttribute('data-id');
+                    var confirmDelete = confirm('Are you sure you want to delete?');
+                    if (confirmDelete) {
+                        fetch('/deleteUser/' + userId, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                btn.closest('.user-info').remove();
+                            } else {
+                                console.error('Failed to delete user');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
